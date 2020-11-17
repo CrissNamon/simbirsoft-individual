@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kpekepsalt.diary.model.Task;
 import ru.kpekepsalt.diary.model.TaskStatus;
+import ru.kpekepsalt.diary.service.PlanService;
 import ru.kpekepsalt.diary.service.TaskService;
 
 import java.time.LocalDate;
@@ -24,6 +25,9 @@ public class PlanController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private PlanService planService;
 
     /**
      * @param date Plan date
@@ -48,18 +52,11 @@ public class PlanController {
      */
     @GetMapping("/{date}/{status}")
     public ResponseEntity<List<Task>> getDayPlan(@PathVariable("date") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable("status") String taskStatus) {
-        List<Task> tasks = getDayPlan(date)
-                .getBody()
-                .stream()
-                .filter(task
-                        ->
-                        task.getTaskStatus().equals(
-                                TaskStatus.valueOf(taskStatus.toUpperCase())
-                        )
-                )
-                .collect(
-                        Collectors.toList()
-                );
+        List<Task> tasks = planService.getTasksWithStatus(
+                getDayPlan(date).getBody(),
+                taskStatus
+        );
+
         if(isEmpty(tasks)) {
             return ResponseEntity.notFound().build();
         }
