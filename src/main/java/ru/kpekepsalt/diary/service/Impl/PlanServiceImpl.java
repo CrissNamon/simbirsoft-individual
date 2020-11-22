@@ -34,4 +34,11 @@ public class PlanServiceImpl implements PlanService {
                 )
         );
     }
+
+    @Override
+    public List<Task> filterPublic(List<Task> taskList) {
+        return taskList.stream()
+                .filter(task -> task.isPublic())
+                .collect(Collectors.toList());
+    }
 }

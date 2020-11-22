@@ -9,5 +9,5 @@ public interface PlanService {
 
     List<Task> getTasksWithStatus(List<Task> taskList, TaskStatus taskStatus);
     List<Task> getTasksWithStatus(List<Task> taskList, String taskStatus);
-
+    List<Task> filterPublic(List<Task> taskList);
 }

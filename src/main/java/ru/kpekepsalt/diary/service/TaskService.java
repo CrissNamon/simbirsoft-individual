@@ -1,6 +1,7 @@
 package ru.kpekepsalt.diary.service;
 
 import ru.kpekepsalt.diary.dto.TaskDto;
+import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.Task;
 
 import java.time.LocalDate;
@@ -37,6 +38,10 @@ public interface TaskService{
      * @param date Date for searching
      * @return List of tasks with given date
      */
-    List<Task> findByDate(LocalDate date);
+    Plan findByDate(LocalDate date);
+
+    Plan findByUserIdAndDate(Long userId, LocalDate date);
+
+    Plan findByUserId(Long userId);
 
 }

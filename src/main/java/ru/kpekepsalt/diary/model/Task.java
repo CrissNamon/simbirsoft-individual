@@ -32,6 +32,12 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;
 
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "public")
+    private boolean isPublic;
+
     public Task() {}
 
     public Task(TaskDto taskDto) {
@@ -40,6 +46,7 @@ public class Task {
         this.startTime = taskDto.getStartTime();
         this.endTime = taskDto.getEndTime();
         this.taskStatus = taskDto.getTaskStatus();
+        this.isPublic = taskDto.isPublic();
     }
 
     public Long getId() {
@@ -88,5 +95,21 @@ public class Task {
 
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 }

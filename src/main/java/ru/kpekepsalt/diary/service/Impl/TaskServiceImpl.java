@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.kpekepsalt.diary.dto.TaskDto;
+import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.Task;
 import ru.kpekepsalt.diary.repository.TaskRepository;
 import ru.kpekepsalt.diary.service.TaskService;
@@ -46,8 +47,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> findByDate(LocalDate date) {
-        return taskRepository.findByDate(date);
+    public Plan findByDate(LocalDate date) {
+        return new Plan(taskRepository.findByDate(date));
+    }
+
+    @Override
+    public Plan findByUserIdAndDate(Long userId, LocalDate date) {
+        return new Plan(taskRepository.findByUserIdAndDate(userId, date));
+    }
+
+    @Override
+    public Plan findByUserId(Long userId) {
+        return new Plan(taskRepository.findByUserId(userId));
     }
 
 }

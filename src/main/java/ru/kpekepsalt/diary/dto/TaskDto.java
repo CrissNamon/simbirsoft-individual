@@ -32,6 +32,11 @@ public class TaskDto {
     private TaskStatus taskStatus;
 
     /**
+     * Does the task visible for everyone?
+     */
+    private boolean isPublic;
+
+    /**
      * @return Task title
      */
     public String getTitle() {
@@ -99,5 +104,13 @@ public class TaskDto {
      */
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 }
