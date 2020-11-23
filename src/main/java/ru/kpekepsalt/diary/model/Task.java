@@ -1,15 +1,10 @@
 package ru.kpekepsalt.diary.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
 import ru.kpekepsalt.diary.dto.TaskDto;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 @Entity
 public class Task {
@@ -37,9 +32,6 @@ public class Task {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "public")
-    private boolean isPublic;
-
     public Task() {}
 
     public Task(TaskDto taskDto) {
@@ -47,12 +39,7 @@ public class Task {
         this.date = taskDto.getDate();
         this.startTime = taskDto.getStartTime();
         this.endTime = taskDto.getEndTime();
-        if(isEmpty(taskDto.getTaskStatus())) {
-            this.taskStatus = TaskStatus.OPEN;
-        }else{
-            this.taskStatus = taskDto.getTaskStatus();
-        }
-        this.isPublic = taskDto.isPublic();
+        this.taskStatus = taskDto.getTaskStatus();
     }
 
     public Long getId() {
@@ -109,13 +96,5 @@ public class Task {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public boolean isPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(boolean aPublic) {
-        isPublic = aPublic;
     }
 }

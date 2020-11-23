@@ -9,15 +9,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kpekepsalt.diary.model.Plan;
-import ru.kpekepsalt.diary.model.Task;
-import ru.kpekepsalt.diary.service.Impl.UserDetailsServiceImpl;
+import ru.kpekepsalt.diary.model.TaskStatus;
 import ru.kpekepsalt.diary.service.PlanService;
-import ru.kpekepsalt.diary.service.TaskService;
+import ru.kpekepsalt.diary.service.ResponseService;
 
 import java.time.LocalDate;
-import java.util.List;
-
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 
 @RestController
@@ -25,21 +21,22 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 public class PlanController {
 
     @Autowired
-    private TaskService taskService;
-
-    @Autowired
     private PlanService planService;
 
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private ResponseService<Plan> responseService;
 
     /**
      * @return List of tasks for today
      */
     @GetMapping("/")
     @PreAuthorize("hasAuthority('plan:get:now')")
-    public ResponseEntity<List<Task>> getDayPlan() {
-        return getDayPlan(LocalDate.now());
+    public ResponseEntity<Plan> getDayPlan() {
+        return planService.getPlan(
+                LocalDate.now(),
+                null,
+                plan -> responseService.ok(plan)
+        );
     }
 
     /**
@@ -48,21 +45,12 @@ public class PlanController {
      */
     @GetMapping("/{date}")
     @PreAuthorize("hasAuthority('plan:get:date')")
-    public ResponseEntity<List<Task>> getDayPlan(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        if(isEmpty(date)) {
-            return ResponseEntity.badRequest().build();
-        }
-        Plan plan = taskService.findByUserIdAndDate(
-                userDetailsService.getUserid(),
-                date
+    public ResponseEntity<Plan> getDayPlan(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return planService.getPlan(
+                date,
+                null,
+                plan -> responseService.ok(plan)
         );
-        if(plan.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        if(!userDetailsService.hasAuthority("task:get:private") && !userDetailsService.getUserid().equals(userDetailsService.getUserid())) {
-            plan = plan.filterPublic();
-        }
-        return ResponseEntity.ok(plan.getPlan());
     }
 
     /**
@@ -71,19 +59,12 @@ public class PlanController {
      * @return List of tasks for given date with given status
      */
     @GetMapping("/{date}/{status}")
-    public ResponseEntity<List<Task>> getDayPlan(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable("status") String taskStatus) {
-        if(isEmpty(date)) {
-            return ResponseEntity.badRequest().build();
-        }
-        List<Task> tasks = planService.getTasksWithStatus(
-                getDayPlan(date).getBody(),
-                taskStatus
+    public ResponseEntity<Plan> getDayPlan(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable("status") String taskStatus) {
+        return planService.getPlan(
+                date,
+                TaskStatus.valueOf(taskStatus.toUpperCase()),
+                plan -> responseService.ok(plan)
         );
-        Plan plan = new Plan(tasks);
-        if(plan.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(tasks);
     }
 
 }

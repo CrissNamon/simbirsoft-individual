@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.kpekepsalt.diary.dto.TaskDto;
+import ru.kpekepsalt.diary.functional.ParamResponseFunctional;
+import ru.kpekepsalt.diary.functional.ResponseFunctional;
 import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.Task;
 import ru.kpekepsalt.diary.repository.TaskRepository;
 import ru.kpekepsalt.diary.service.TaskService;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
@@ -20,6 +20,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
     @Override
     public boolean save(TaskDto taskDto) {
@@ -59,6 +62,49 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Plan findByUserId(Long userId) {
         return new Plan(taskRepository.findByUserId(userId));
+    }
+
+    @Override
+    public ResponseEntity<Task> getTask(Long id, ParamResponseFunctional<Task> ok, ResponseFunctional<Task> ifNotFound, ResponseFunctional<Task> ifForbidden, ResponseFunctional<Task> ifNoData) {
+        if(isEmpty(id)) {
+            return ifNoData.action();
+        }
+        Task task = findById(id);
+        if(isEmpty(task)) {
+            return ifNotFound.action();
+        }
+        if(!task.getUserId().equals(userDetailsService.getUserid()) && !userDetailsService.hasAuthority("task:get")) {
+            return ifForbidden.action();
+        }
+        return ok.action(task);
+    }
+
+    @Override
+    public ResponseEntity<Task> addTask(TaskDto taskDto, ParamResponseFunctional<Task> ok, ResponseFunctional<Task> ifNoData) {
+        if(isEmpty(taskDto)) {
+            return ifNoData.action();
+        }
+        Task task = new Task(taskDto);
+        task.setUserId(userDetailsService.getUserid());
+        save(task);
+        return ok.action(task);
+    }
+
+    @Override
+    public ResponseEntity<Task> removeTask(Long id, ResponseFunctional<Task> ok, ResponseFunctional<Task> ifNotFound,
+                                           ResponseFunctional<Task> ifForbidden, ResponseFunctional<Task> ifNoData) {
+        if(isEmpty(id)) {
+            return ifNoData.action();
+        }
+        Task task = findById(id);
+        if(!userDetailsService.hasAuthority("task:remove") && !userDetailsService.getUserid().equals(task.getUserId())) {
+            return ifForbidden.action();
+        }
+        if(isEmpty(task)) {
+            return ifNotFound.action();
+        }
+        delete(id);
+        return ok.action();
     }
 
 }

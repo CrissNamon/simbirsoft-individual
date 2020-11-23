@@ -1,13 +1,13 @@
 package ru.kpekepsalt.diary.service;
 
-import ru.kpekepsalt.diary.model.Task;
+import org.springframework.http.ResponseEntity;
+import ru.kpekepsalt.diary.functional.ParamResponseFunctional;
+import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.TaskStatus;
 
-import java.util.List;
+import java.time.LocalDate;
 
 public interface PlanService {
 
-    List<Task> getTasksWithStatus(List<Task> taskList, TaskStatus taskStatus);
-    List<Task> getTasksWithStatus(List<Task> taskList, String taskStatus);
-    List<Task> filterPublic(List<Task> taskList);
+    ResponseEntity<Plan> getPlan(LocalDate date, TaskStatus taskStatus, ParamResponseFunctional<Plan> ok);
 }

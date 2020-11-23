@@ -1,11 +1,13 @@
 package ru.kpekepsalt.diary.service;
 
+import org.springframework.http.ResponseEntity;
 import ru.kpekepsalt.diary.dto.TaskDto;
+import ru.kpekepsalt.diary.functional.ParamResponseFunctional;
+import ru.kpekepsalt.diary.functional.ResponseFunctional;
 import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.Task;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public interface TaskService{
 
@@ -44,4 +46,11 @@ public interface TaskService{
 
     Plan findByUserId(Long userId);
 
+    ResponseEntity<Task> getTask(Long id, ParamResponseFunctional<Task> ok, ResponseFunctional<Task> ifNotFound,
+                                 ResponseFunctional<Task> ifForbidden, ResponseFunctional<Task> ifNoData);
+
+    ResponseEntity<Task> addTask(TaskDto taskDto, ParamResponseFunctional<Task> ok, ResponseFunctional<Task> ifNoData);
+
+    ResponseEntity<Task> removeTask(Long id, ResponseFunctional<Task> ok, ResponseFunctional<Task> ifNotFound,
+                                    ResponseFunctional<Task> ifForbidden, ResponseFunctional<Task> ifNoData);
 }

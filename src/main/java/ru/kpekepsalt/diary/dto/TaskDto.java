@@ -6,6 +6,7 @@ import ru.kpekepsalt.diary.model.TaskStatus;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 public class TaskDto {
 
@@ -29,12 +30,7 @@ public class TaskDto {
     /**
      * Task status
      */
-    private TaskStatus taskStatus;
-
-    /**
-     * Does the task visible for everyone?
-     */
-    private boolean isPublic;
+    private Optional<TaskStatus> taskStatus;
 
     /**
      * @return Task title
@@ -96,21 +92,13 @@ public class TaskDto {
      * @return Task status
      */
     public TaskStatus getTaskStatus() {
-        return taskStatus;
+        return taskStatus.orElse(TaskStatus.OPEN);
     }
 
     /**
      * @param taskStatus Task status
      */
     public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
-    }
-
-    public boolean isPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(boolean aPublic) {
-        isPublic = aPublic;
+        this.taskStatus = Optional.of(taskStatus);
     }
 }
