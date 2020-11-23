@@ -1,17 +1,18 @@
 package ru.kpekepsalt.diary.service.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.kpekepsalt.diary.dto.TaskDto;
-import ru.kpekepsalt.diary.functional.ParamResponseFunctional;
-import ru.kpekepsalt.diary.functional.ResponseFunctional;
+import ru.kpekepsalt.diary.functional.Functional;
+import ru.kpekepsalt.diary.functional.VoidParamActionFunctional;
+import ru.kpekepsalt.diary.functional.VoidActionFunctional;
 import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.Task;
 import ru.kpekepsalt.diary.repository.TaskRepository;
 import ru.kpekepsalt.diary.service.TaskService;
 
 import java.time.LocalDate;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
@@ -65,46 +66,88 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public ResponseEntity<Task> getTask(Long id, ParamResponseFunctional<Task> ok, ResponseFunctional<Task> ifNotFound, ResponseFunctional<Task> ifForbidden, ResponseFunctional<Task> ifNoData) {
+    public void getTask(Long id, VoidParamActionFunctional<Task> ok, VoidActionFunctional ifNotFound, VoidActionFunctional ifForbidden, VoidActionFunctional ifNoData) {
         if(isEmpty(id)) {
-            return ifNoData.action();
+            ifNoData.action();
+            return;
         }
         Task task = findById(id);
         if(isEmpty(task)) {
-            return ifNotFound.action();
+            ifNotFound.action();
+            return;
         }
         if(!task.getUserId().equals(userDetailsService.getUserid()) && !userDetailsService.hasAuthority("task:get")) {
-            return ifForbidden.action();
+            ifForbidden.action();
+            return;
         }
-        return ok.action(task);
+        ok.action(task);
     }
 
     @Override
-    public ResponseEntity<Task> addTask(TaskDto taskDto, ParamResponseFunctional<Task> ok, ResponseFunctional<Task> ifNoData) {
+    public void addTask(TaskDto taskDto, VoidParamActionFunctional<Task> ok, VoidActionFunctional ifNoData) {
         if(isEmpty(taskDto)) {
-            return ifNoData.action();
+            ifNoData.action();
+            return;
         }
         Task task = new Task(taskDto);
         task.setUserId(userDetailsService.getUserid());
         save(task);
-        return ok.action(task);
+        ok.action(task);
     }
 
     @Override
-    public ResponseEntity<Task> removeTask(Long id, ResponseFunctional<Task> ok, ResponseFunctional<Task> ifNotFound,
-                                           ResponseFunctional<Task> ifForbidden, ResponseFunctional<Task> ifNoData) {
+    public void removeTask(Long id, VoidActionFunctional ok, VoidActionFunctional ifNotFound,
+                           VoidActionFunctional ifForbidden, VoidActionFunctional ifNoData) {
         if(isEmpty(id)) {
-            return ifNoData.action();
+            ifNoData.action();
+            return;
         }
         Task task = findById(id);
         if(!userDetailsService.hasAuthority("task:remove") && !userDetailsService.getUserid().equals(task.getUserId())) {
-            return ifForbidden.action();
+            ifForbidden.action();
+            return;
         }
         if(isEmpty(task)) {
-            return ifNotFound.action();
+            ifNotFound.action();
+            return;
         }
         delete(id);
-        return ok.action();
+        ok.action();
+    }
+
+    @Override
+    public Task getTask(Long id) {
+        AtomicReference<Task> atomicReference = new AtomicReference<>();
+        getTask(
+                id,
+                atomicReference::set,
+                Functional::empty,
+                Functional::empty,
+                Functional::empty
+        );
+        return atomicReference.get();
+    }
+
+    @Override
+    public Task addTask(TaskDto taskDto) {
+        AtomicReference<Task> atomicReference = new AtomicReference<>();
+        addTask(
+                taskDto,
+                atomicReference::set,
+                Functional::empty
+        );
+        return atomicReference.get();
+    }
+
+    @Override
+    public void removeTask(Long id) {
+        removeTask(
+                id,
+                Functional::empty,
+                Functional::empty,
+                Functional::empty,
+                Functional::empty
+        );
     }
 
 }

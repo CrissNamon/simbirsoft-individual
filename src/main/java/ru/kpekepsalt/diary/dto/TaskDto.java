@@ -1,7 +1,5 @@
 package ru.kpekepsalt.diary.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
 import ru.kpekepsalt.diary.model.TaskStatus;
 
 import java.time.LocalDate;

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.TaskStatus;
 import ru.kpekepsalt.diary.service.PlanService;
-import ru.kpekepsalt.diary.service.ResponseService;
 
 import java.time.LocalDate;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 @RestController
@@ -23,20 +23,19 @@ public class PlanController {
     @Autowired
     private PlanService planService;
 
-    @Autowired
-    private ResponseService<Plan> responseService;
-
     /**
      * @return List of tasks for today
      */
     @GetMapping("/")
     @PreAuthorize("hasAuthority('plan:get:now')")
     public ResponseEntity<Plan> getDayPlan() {
-        return planService.getPlan(
+        AtomicReference<ResponseEntity<Plan>> responseEntityAtomicReference = new AtomicReference<>();
+        planService.getPlan(
                 LocalDate.now(),
                 null,
-                plan -> responseService.ok(plan)
+                plan -> responseEntityAtomicReference.set(ResponseEntity.ok(plan))
         );
+        return responseEntityAtomicReference.get();
     }
 
     /**
@@ -46,11 +45,13 @@ public class PlanController {
     @GetMapping("/{date}")
     @PreAuthorize("hasAuthority('plan:get:date')")
     public ResponseEntity<Plan> getDayPlan(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return planService.getPlan(
+        AtomicReference<ResponseEntity<Plan>> responseEntityAtomicReference = new AtomicReference<>();
+        planService.getPlan(
                 date,
                 null,
-                plan -> responseService.ok(plan)
+                plan -> responseEntityAtomicReference.set(ResponseEntity.ok(plan))
         );
+        return responseEntityAtomicReference.get();
     }
 
     /**
@@ -60,11 +61,17 @@ public class PlanController {
      */
     @GetMapping("/{date}/{status}")
     public ResponseEntity<Plan> getDayPlan(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable("status") String taskStatus) {
-        return planService.getPlan(
-                date,
-                TaskStatus.valueOf(taskStatus.toUpperCase()),
-                plan -> responseService.ok(plan)
-        );
+        AtomicReference<ResponseEntity<Plan>> responseEntityAtomicReference = new AtomicReference<>();
+        try {
+            planService.getPlan(
+                    date,
+                    TaskStatus.valueOf(taskStatus.toUpperCase()),
+                    plan -> responseEntityAtomicReference.set(ResponseEntity.ok(plan))
+            );
+        }catch(IllegalArgumentException e){
+            responseEntityAtomicReference.set(ResponseEntity.badRequest().build());
+        }
+        return responseEntityAtomicReference.get();
     }
 
 }

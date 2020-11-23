@@ -1,7 +1,6 @@
 package ru.kpekepsalt.diary.model;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Plan {
 
@@ -25,24 +24,4 @@ public class Plan {
         return plan.isEmpty();
     }
 
-    public void filterByStatus(TaskStatus taskStatus) {
-        plan
-                .stream()
-                .filter(task
-                        ->
-                        task.getTaskStatus()
-                                .equals(taskStatus)
-                )
-                .collect(
-                        Collectors.toList()
-                );
-    }
-
-    public void filterByStatus(String taskStatus) {
-        filterByStatus(
-                TaskStatus.valueOf(
-                        taskStatus.toUpperCase()
-                )
-        );
-    }
 }

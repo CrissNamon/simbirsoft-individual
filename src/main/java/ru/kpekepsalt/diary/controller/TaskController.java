@@ -1,13 +1,15 @@
 package ru.kpekepsalt.diary.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.kpekepsalt.diary.dto.TaskDto;
 import ru.kpekepsalt.diary.model.Task;
-import ru.kpekepsalt.diary.service.ResponseService;
 import ru.kpekepsalt.diary.service.TaskService;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequestMapping("/api/v1/task")
@@ -16,21 +18,21 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @Autowired
-    private ResponseService<Task> responseService;
-
     /**
      * @param id Task id
      * @return Task information with given id
      */
     @GetMapping("/{id}")
     public ResponseEntity<Task> getTask(@PathVariable("id") Long id) {
-        return taskService.getTask(id,
-                task -> responseService.ok(task),
-                () -> responseService.notFound(),
-                () -> responseService.forbidden(),
-                () -> responseService.badRequest()
+        AtomicReference<ResponseEntity<Task>> responseEntityAtomicReference = new AtomicReference<>();
+        taskService.getTask(
+                id,
+                task -> responseEntityAtomicReference.set(ResponseEntity.ok(task)),
+                () -> responseEntityAtomicReference.set(ResponseEntity.notFound().build()),
+                () -> responseEntityAtomicReference.set(ResponseEntity.status(HttpStatus.FORBIDDEN).build()),
+                () -> responseEntityAtomicReference.set(ResponseEntity.badRequest().build())
         );
+        return responseEntityAtomicReference.get();
     }
 
     /**
@@ -40,11 +42,13 @@ public class TaskController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('task:add')")
     public ResponseEntity<Task> addTask(@RequestBody TaskDto taskDto) {
-        return taskService.addTask(
+        AtomicReference<ResponseEntity<Task>> responseEntityAtomicReference = new AtomicReference<>();
+        taskService.addTask(
                 taskDto,
-                task -> responseService.ok(task),
-                () -> responseService.badRequest()
+                task -> responseEntityAtomicReference.set(ResponseEntity.ok(task)),
+                () -> responseEntityAtomicReference.set(ResponseEntity.badRequest().build())
         );
+        return responseEntityAtomicReference.get();
     }
 
     /**
@@ -53,13 +57,15 @@ public class TaskController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Task> deleteTask(@PathVariable("id") Long id) {
-        return taskService.removeTask(
+        AtomicReference<ResponseEntity<Task>> responseEntityAtomicReference = new AtomicReference<>();
+        taskService.removeTask(
                 id,
-                () -> responseService.ok(),
-                () -> responseService.notFound(),
-                () -> responseService.forbidden(),
-                () -> responseService.badRequest()
+                () -> responseEntityAtomicReference.set(ResponseEntity.ok().build()),
+                () -> responseEntityAtomicReference.set(ResponseEntity.notFound().build()),
+                () -> responseEntityAtomicReference.set(ResponseEntity.status(HttpStatus.FORBIDDEN).build()),
+                () -> responseEntityAtomicReference.set(ResponseEntity.badRequest().build())
         );
+        return responseEntityAtomicReference.get();
     }
 
 }

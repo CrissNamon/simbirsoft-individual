@@ -1,9 +1,8 @@
 package ru.kpekepsalt.diary.service;
 
-import org.springframework.http.ResponseEntity;
 import ru.kpekepsalt.diary.dto.TaskDto;
-import ru.kpekepsalt.diary.functional.ParamResponseFunctional;
-import ru.kpekepsalt.diary.functional.ResponseFunctional;
+import ru.kpekepsalt.diary.functional.VoidParamActionFunctional;
+import ru.kpekepsalt.diary.functional.VoidActionFunctional;
 import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.Task;
 
@@ -46,11 +45,15 @@ public interface TaskService{
 
     Plan findByUserId(Long userId);
 
-    ResponseEntity<Task> getTask(Long id, ParamResponseFunctional<Task> ok, ResponseFunctional<Task> ifNotFound,
-                                 ResponseFunctional<Task> ifForbidden, ResponseFunctional<Task> ifNoData);
+    void getTask(Long id, VoidParamActionFunctional<Task> ok, VoidActionFunctional ifNotFound,
+                 VoidActionFunctional ifForbidden, VoidActionFunctional ifNoData);
 
-    ResponseEntity<Task> addTask(TaskDto taskDto, ParamResponseFunctional<Task> ok, ResponseFunctional<Task> ifNoData);
+    void addTask(TaskDto taskDto, VoidParamActionFunctional<Task> ok, VoidActionFunctional ifNoData);
 
-    ResponseEntity<Task> removeTask(Long id, ResponseFunctional<Task> ok, ResponseFunctional<Task> ifNotFound,
-                                    ResponseFunctional<Task> ifForbidden, ResponseFunctional<Task> ifNoData);
+    void removeTask(Long id, VoidActionFunctional ok, VoidActionFunctional ifNotFound,
+                    VoidActionFunctional ifForbidden, VoidActionFunctional ifNoData);
+
+    Task getTask(Long id);
+    Task addTask(TaskDto taskDto);
+    void removeTask(Long id);
 }

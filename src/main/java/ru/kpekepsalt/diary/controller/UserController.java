@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.kpekepsalt.diary.dto.AppUserDto;
 import ru.kpekepsalt.diary.model.AppUser;
 import ru.kpekepsalt.diary.service.AppUserService;
-import ru.kpekepsalt.diary.service.ResponseService;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -16,9 +17,6 @@ public class UserController {
     @Autowired
     private AppUserService appUserService;
 
-    @Autowired
-    private ResponseService<AppUser> responseService;
-
     /**
      * Creates new user with given login and password
      * @param appUserDto AppUser object
@@ -26,11 +24,13 @@ public class UserController {
      */
     @PostMapping("/")
     public ResponseEntity<AppUser> createUser(@RequestBody AppUserDto appUserDto){
-        return appUserService.createUser(appUserDto,
-                (user) -> responseService.ok(user),
-                () -> responseService.status(HttpStatus.IM_USED),
-                () -> responseService.badRequest()
+        AtomicReference<ResponseEntity<AppUser>> responseEntityAtomicReference = new AtomicReference<>();
+        appUserService.createUser(appUserDto,
+                (user) -> responseEntityAtomicReference.set(ResponseEntity.ok(user)),
+                () -> responseEntityAtomicReference.set(ResponseEntity.status(HttpStatus.IM_USED).build()),
+                () -> responseEntityAtomicReference.set(ResponseEntity.badRequest().build())
         );
+        return responseEntityAtomicReference.get();
     }
 
 }
