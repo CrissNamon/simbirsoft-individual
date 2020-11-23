@@ -26,16 +26,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/user/**").not().authenticated()
+                .antMatchers("/api/v1/user/**").anonymous()
                 .antMatchers("/api/v1/task/**").authenticated()
                 .antMatchers("/api/v1/plan/**").authenticated()
                 .and().httpBasic()
                 .and().sessionManagement().disable();
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/api/v1/user/**");
     }
 
     @Bean

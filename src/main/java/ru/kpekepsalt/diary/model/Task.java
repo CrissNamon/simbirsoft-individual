@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+
 @Entity
 public class Task {
 
@@ -45,7 +47,11 @@ public class Task {
         this.date = taskDto.getDate();
         this.startTime = taskDto.getStartTime();
         this.endTime = taskDto.getEndTime();
-        this.taskStatus = taskDto.getTaskStatus();
+        if(isEmpty(taskDto.getTaskStatus())) {
+            this.taskStatus = TaskStatus.OPEN;
+        }else{
+            this.taskStatus = taskDto.getTaskStatus();
+        }
         this.isPublic = taskDto.isPublic();
     }
 
