@@ -7,6 +7,7 @@ import ru.kpekepsalt.diary.dto.AppUserDto;
 import ru.kpekepsalt.diary.functional.Functional;
 import ru.kpekepsalt.diary.functional.VoidParamActionFunctional;
 import ru.kpekepsalt.diary.functional.VoidActionFunctional;
+import ru.kpekepsalt.diary.mapper.AppUserMapper;
 import ru.kpekepsalt.diary.model.AppUser;
 import ru.kpekepsalt.diary.model.Role;
 import ru.kpekepsalt.diary.repository.UserRepository;
@@ -35,7 +36,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public AppUser createUserObject(AppUserDto appUserDto) {
-        AppUser appUser = new AppUser(appUserDto);
+        AppUser appUser = AppUserMapper.INSTANCE.dtoToUser(appUserDto);
         appUser.setPassword(
                 passwordEncoder.encode(appUser.getPassword())
         );

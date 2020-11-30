@@ -6,6 +6,7 @@ import ru.kpekepsalt.diary.dto.TaskDto;
 import ru.kpekepsalt.diary.functional.Functional;
 import ru.kpekepsalt.diary.functional.VoidParamActionFunctional;
 import ru.kpekepsalt.diary.functional.VoidActionFunctional;
+import ru.kpekepsalt.diary.mapper.TaskMapper;
 import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.Task;
 import ru.kpekepsalt.diary.repository.TaskRepository;
@@ -27,7 +28,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public boolean save(TaskDto taskDto) {
-        Task task = new Task(taskDto);
+        Task task = TaskMapper.INSTANCE.dtoToTask(taskDto);
         return isEmpty(
                 taskRepository.save(task)
         );
@@ -89,7 +90,7 @@ public class TaskServiceImpl implements TaskService {
             ifNoData.action();
             return;
         }
-        Task task = new Task(taskDto);
+        Task task = TaskMapper.INSTANCE.dtoToTask(taskDto);
         task.setUserId(userDetailsService.getUserid());
         save(task);
         ok.action(task);

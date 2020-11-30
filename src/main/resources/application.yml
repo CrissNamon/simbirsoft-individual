@@ -1,6 +1,5 @@
 server:
   port: 8080
-
 spring:
   datasource:
     initialization-mode: always
@@ -9,3 +8,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/diary
     username: postgres
     password: 654212ll
+springfox:
+  documentation:
+    swagger:
+      v2:
+        use-model-v3: true
