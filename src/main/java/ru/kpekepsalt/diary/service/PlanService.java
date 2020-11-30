@@ -1,13 +1,13 @@
 package ru.kpekepsalt.diary.service;
 
-import ru.kpekepsalt.diary.model.Task;
+import ru.kpekepsalt.diary.functional.VoidParamActionFunctional;
+import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.TaskStatus;
 
-import java.util.List;
+import java.time.LocalDate;
 
 public interface PlanService {
-
-    List<Task> getTasksWithStatus(List<Task> taskList, TaskStatus taskStatus);
-    List<Task> getTasksWithStatus(List<Task> taskList, String taskStatus);
-
+    void getPlan(LocalDate date, TaskStatus taskStatus, VoidParamActionFunctional<Plan> ok);
+    Plan getPlan(LocalDate date, TaskStatus status);
+    Plan getPlan(LocalDate date);
 }

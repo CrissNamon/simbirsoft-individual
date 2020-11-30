@@ -1,13 +1,10 @@
 package ru.kpekepsalt.diary.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
 import ru.kpekepsalt.diary.dto.TaskDto;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Task {
@@ -31,6 +28,9 @@ public class Task {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;
+
+    @Column(name = "user_id")
+    private Long userId;
 
     public Task() {}
 
@@ -88,5 +88,13 @@ public class Task {
 
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

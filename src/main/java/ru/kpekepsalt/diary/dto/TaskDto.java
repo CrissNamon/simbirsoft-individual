@@ -1,11 +1,10 @@
 package ru.kpekepsalt.diary.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
 import ru.kpekepsalt.diary.model.TaskStatus;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 public class TaskDto {
 
@@ -29,7 +28,7 @@ public class TaskDto {
     /**
      * Task status
      */
-    private TaskStatus taskStatus;
+    private Optional<TaskStatus> taskStatus;
 
     /**
      * @return Task title
@@ -91,13 +90,13 @@ public class TaskDto {
      * @return Task status
      */
     public TaskStatus getTaskStatus() {
-        return taskStatus;
+        return taskStatus.orElse(TaskStatus.OPEN);
     }
 
     /**
      * @param taskStatus Task status
      */
     public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
+        this.taskStatus = Optional.of(taskStatus);
     }
 }

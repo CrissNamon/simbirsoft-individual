@@ -1,10 +1,12 @@
 package ru.kpekepsalt.diary.service;
 
 import ru.kpekepsalt.diary.dto.TaskDto;
+import ru.kpekepsalt.diary.functional.VoidParamActionFunctional;
+import ru.kpekepsalt.diary.functional.VoidActionFunctional;
+import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.Task;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public interface TaskService{
 
@@ -37,6 +39,21 @@ public interface TaskService{
      * @param date Date for searching
      * @return List of tasks with given date
      */
-    List<Task> findByDate(LocalDate date);
+    Plan findByDate(LocalDate date);
 
+    Plan findByUserIdAndDate(Long userId, LocalDate date);
+
+    Plan findByUserId(Long userId);
+
+    void getTask(Long id, VoidParamActionFunctional<Task> ok, VoidActionFunctional ifNotFound,
+                 VoidActionFunctional ifForbidden, VoidActionFunctional ifNoData);
+
+    void addTask(TaskDto taskDto, VoidParamActionFunctional<Task> ok, VoidActionFunctional ifNoData);
+
+    void removeTask(Long id, VoidActionFunctional ok, VoidActionFunctional ifNotFound,
+                    VoidActionFunctional ifForbidden, VoidActionFunctional ifNoData);
+
+    Task getTask(Long id);
+    Task addTask(TaskDto taskDto);
+    void removeTask(Long id);
 }
