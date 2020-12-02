@@ -5,7 +5,7 @@ import org.mapstruct.factory.Mappers;
 import ru.kpekepsalt.diary.dto.TaskDto;
 import ru.kpekepsalt.diary.model.Task;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface TaskMapper {
     TaskMapper INSTANCE = Mappers.getMapper(TaskMapper.class);
     TaskDto taskToDto(Task task);

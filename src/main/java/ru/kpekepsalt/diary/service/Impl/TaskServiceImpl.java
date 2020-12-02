@@ -1,5 +1,7 @@
 package ru.kpekepsalt.diary.service.Impl;
 
+import java.time.LocalDate;
+import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.kpekepsalt.diary.dto.TaskDto;
@@ -11,9 +13,6 @@ import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.Task;
 import ru.kpekepsalt.diary.repository.TaskRepository;
 import ru.kpekepsalt.diary.service.TaskService;
-
-import java.time.LocalDate;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
@@ -67,7 +66,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void getTask(Long id, VoidParamActionFunctional<Task> ok, VoidActionFunctional ifNotFound, VoidActionFunctional ifForbidden, VoidActionFunctional ifNoData) {
+    public void getTask(Long id, VoidParamActionFunctional<Task> ok,
+                        VoidActionFunctional ifNotFound, VoidActionFunctional ifForbidden,
+                        VoidActionFunctional ifNoData) {
         if(isEmpty(id)) {
             ifNoData.action();
             return;
@@ -77,7 +78,8 @@ public class TaskServiceImpl implements TaskService {
             ifNotFound.action();
             return;
         }
-        if(!task.getUserId().equals(userDetailsService.getUserid()) && !userDetailsService.hasAuthority("task:get")) {
+        if(!task.getUserId().equals(userDetailsService.getUserid())
+                && !userDetailsService.hasAuthority("task:get")) {
             ifForbidden.action();
             return;
         }
@@ -104,7 +106,8 @@ public class TaskServiceImpl implements TaskService {
             return;
         }
         Task task = findById(id);
-        if(!userDetailsService.hasAuthority("task:remove") && !userDetailsService.getUserid().equals(task.getUserId())) {
+        if(!userDetailsService.hasAuthority("task:remove")
+                && !userDetailsService.getUserid().equals(task.getUserId())) {
             ifForbidden.action();
             return;
         }

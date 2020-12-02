@@ -5,7 +5,7 @@ import org.mapstruct.factory.Mappers;
 import ru.kpekepsalt.diary.dto.AppUserDto;
 import ru.kpekepsalt.diary.model.AppUser;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AppUserMapper {
     AppUserMapper INSTANCE = Mappers.getMapper(AppUserMapper.class);
     AppUser dtoToUser(AppUserDto dto);

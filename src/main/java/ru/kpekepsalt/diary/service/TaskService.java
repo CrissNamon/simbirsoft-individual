@@ -1,12 +1,11 @@
 package ru.kpekepsalt.diary.service;
 
+import java.time.LocalDate;
 import ru.kpekepsalt.diary.dto.TaskDto;
 import ru.kpekepsalt.diary.functional.VoidParamActionFunctional;
 import ru.kpekepsalt.diary.functional.VoidActionFunctional;
 import ru.kpekepsalt.diary.model.Plan;
 import ru.kpekepsalt.diary.model.Task;
-
-import java.time.LocalDate;
 
 public interface TaskService{
 

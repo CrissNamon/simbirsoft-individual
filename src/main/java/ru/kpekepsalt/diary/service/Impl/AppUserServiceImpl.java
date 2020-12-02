@@ -62,7 +62,8 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public void createUser(AppUserDto appUserDto, VoidParamActionFunctional<AppUser> ok, VoidActionFunctional ifUserExists, VoidActionFunctional ifNoData) {
+    public void createUser(AppUserDto appUserDto, VoidParamActionFunctional<AppUser> ok,
+                           VoidActionFunctional ifUserExists, VoidActionFunctional ifNoData) {
         if(isEmpty(appUserDto)) {
             ifNoData.action();
             return;
