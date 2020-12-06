@@ -1,6 +1,8 @@
 package ru.kpekepsalt.diary.service;
 
 import java.time.LocalDate;
+
+import com.sun.istack.NotNull;
 import ru.kpekepsalt.diary.dto.TaskDto;
 import ru.kpekepsalt.diary.functional.VoidParamActionFunctional;
 import ru.kpekepsalt.diary.functional.VoidActionFunctional;
@@ -44,13 +46,13 @@ public interface TaskService{
 
     Plan findByUserId(Long userId);
 
-    void getTask(Long id, VoidParamActionFunctional<Task> ok, VoidActionFunctional ifNotFound,
-                 VoidActionFunctional ifForbidden, VoidActionFunctional ifNoData);
+    void getTask(@NotNull Long id, VoidParamActionFunctional<Task> ok, VoidActionFunctional ifNotFound,
+                 VoidActionFunctional ifNoData);
 
     void addTask(TaskDto taskDto, VoidParamActionFunctional<Task> ok, VoidActionFunctional ifNoData);
 
     void removeTask(Long id, VoidActionFunctional ok, VoidActionFunctional ifNotFound,
-                    VoidActionFunctional ifForbidden, VoidActionFunctional ifNoData);
+                    VoidActionFunctional ifNoData);
 
     Task getTask(Long id);
     Task addTask(TaskDto taskDto);

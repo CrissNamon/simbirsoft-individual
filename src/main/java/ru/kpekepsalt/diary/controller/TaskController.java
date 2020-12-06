@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.kpekepsalt.diary.dto.TaskDto;
 import ru.kpekepsalt.diary.model.Task;
+import ru.kpekepsalt.diary.service.Impl.UserDetailsServiceImpl;
 import ru.kpekepsalt.diary.service.TaskService;
 
 @Api(tags = "Task")
@@ -25,6 +26,9 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
     /**
      * @param id Task id
@@ -65,9 +69,17 @@ public class TaskController {
                 new AtomicReference<>();
         taskService.getTask(
                 id,
-                task -> responseEntityAtomicReference.set(ResponseEntity.ok(task)),
+                task -> {
+                    if(!task.getUserId().equals(userDetailsService.getUserid())
+                            && !userDetailsService.hasAuthority("task:get")) {
+                            responseEntityAtomicReference.set(
+                                    ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+                            );
+                    }else {
+                        responseEntityAtomicReference.set(ResponseEntity.ok(task));
+                    }
+                },
                 () -> responseEntityAtomicReference.set(ResponseEntity.notFound().build()),
-                () -> responseEntityAtomicReference.set(ResponseEntity.status(HttpStatus.FORBIDDEN).build()),
                 () -> responseEntityAtomicReference.set(ResponseEntity.badRequest().build())
         );
         return responseEntityAtomicReference.get();
@@ -137,12 +149,21 @@ public class TaskController {
             @PathVariable("id") Long id) {
         AtomicReference<ResponseEntity<Task>> responseEntityAtomicReference =
                 new AtomicReference<>();
-        taskService.removeTask(
+        taskService.getTask(
                 id,
-                () -> responseEntityAtomicReference.set(ResponseEntity.ok().build()),
-                () -> responseEntityAtomicReference.set(ResponseEntity.notFound().build()),
-                () -> responseEntityAtomicReference.set(ResponseEntity.status(HttpStatus.FORBIDDEN).build()),
-                () -> responseEntityAtomicReference.set(ResponseEntity.badRequest().build())
+                (task) -> {
+                    if(!userDetailsService.hasAuthority("task:remove")
+                            && !userDetailsService.getUserid().equals(task.getUserId())) {
+                        responseEntityAtomicReference.set(
+                                ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+                        );
+                    }else{
+                        taskService.removeTask(id);
+                        responseEntityAtomicReference.set(ResponseEntity.ok().build());
+                    }
+                },
+                () -> ResponseEntity.notFound().build(),
+                () -> ResponseEntity.badRequest().build()
         );
         return responseEntityAtomicReference.get();
     }

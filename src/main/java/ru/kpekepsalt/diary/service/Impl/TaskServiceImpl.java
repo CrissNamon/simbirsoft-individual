@@ -67,8 +67,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void getTask(Long id, VoidParamActionFunctional<Task> ok,
-                        VoidActionFunctional ifNotFound, VoidActionFunctional ifForbidden,
-                        VoidActionFunctional ifNoData) {
+                        VoidActionFunctional ifNotFound, VoidActionFunctional ifNoData) {
         if(isEmpty(id)) {
             ifNoData.action();
             return;
@@ -76,11 +75,6 @@ public class TaskServiceImpl implements TaskService {
         Task task = findById(id);
         if(isEmpty(task)) {
             ifNotFound.action();
-            return;
-        }
-        if(!task.getUserId().equals(userDetailsService.getUserid())
-                && !userDetailsService.hasAuthority("task:get")) {
-            ifForbidden.action();
             return;
         }
         ok.action(task);
@@ -100,17 +94,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void removeTask(Long id, VoidActionFunctional ok, VoidActionFunctional ifNotFound,
-                           VoidActionFunctional ifForbidden, VoidActionFunctional ifNoData) {
+                           VoidActionFunctional ifNoData) {
         if(isEmpty(id)) {
             ifNoData.action();
             return;
         }
         Task task = findById(id);
-        if(!userDetailsService.hasAuthority("task:remove")
-                && !userDetailsService.getUserid().equals(task.getUserId())) {
-            ifForbidden.action();
-            return;
-        }
         if(isEmpty(task)) {
             ifNotFound.action();
             return;
@@ -125,7 +114,6 @@ public class TaskServiceImpl implements TaskService {
         getTask(
                 id,
                 atomicReference::set,
-                Functional::empty,
                 Functional::empty,
                 Functional::empty
         );
@@ -147,7 +135,6 @@ public class TaskServiceImpl implements TaskService {
     public void removeTask(Long id) {
         removeTask(
                 id,
-                Functional::empty,
                 Functional::empty,
                 Functional::empty,
                 Functional::empty

@@ -6,11 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @ApiModel("Task")
 @Entity
