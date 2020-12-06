@@ -1,24 +1,19 @@
 package ru.kpekepsalt.diary.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
 
+import lombok.*;
+
+@ApiModel("Plan")
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Plan {
 
+    @ApiModelProperty(dataType = "object")
     private List<Task> plan;
-
-    public Plan() {}
-
-    public Plan(List<Task> taskList) {
-        this.plan = taskList;
-    }
-
-    public List<Task> getPlan() {
-        return plan;
-    }
-
-    public void setPlan(List<Task> plan) {
-        this.plan = plan;
-    }
 
     public boolean isEmpty() {
         return plan.isEmpty();

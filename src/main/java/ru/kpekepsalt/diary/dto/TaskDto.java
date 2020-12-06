@@ -1,90 +1,43 @@
 package ru.kpekepsalt.diary.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import ru.kpekepsalt.diary.model.TaskStatus;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
+@ApiModel("TaskDto")
+@Data
 public class TaskDto {
-
 
     /**
      * Task title
      */
+    @ApiModelProperty(example = "Test task")
     private String title;
     /**
      * Task date
      */
+    @ApiModelProperty(example = "2020-11-19")
     private LocalDate date;
     /**
      * Task start time
      */
+    @ApiModelProperty(example = "00:00:00", dataType = "java.sql.Date")
     private LocalTime startTime;
     /**
      * Task end time
      */
+    @ApiModelProperty(example = "00:00:00", dataType = "java.sql.Date")
     private LocalTime endTime;
     /**
      * Task status
      */
+    @ApiModelProperty(name = "status", example = "OPEN")
     private Optional<TaskStatus> taskStatus;
-
-    /**
-     * @return Task title
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * @param title Task title
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * @return Task date
-     */
-    public LocalDate getDate() {
-        return date;
-    }
-
-    /**
-     * @param date Task date
-     */
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    /**
-     * @return Task start time
-     */
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    /**
-     * @param startTime Task start time
-     */
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
-    /**
-     * @return Task end time
-     */
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
-    /**
-     * @param endTime Task end time
-     */
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
-    }
 
     /**
      * @return Task status

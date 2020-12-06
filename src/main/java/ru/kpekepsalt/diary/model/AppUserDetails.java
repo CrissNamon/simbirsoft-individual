@@ -1,12 +1,11 @@
 package ru.kpekepsalt.diary.model;
 
+import java.util.Collection;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import java.util.Collection;
-import java.util.Set;
 
 @Component
 public class AppUserDetails implements UserDetails {

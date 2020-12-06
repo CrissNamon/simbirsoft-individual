@@ -1,5 +1,10 @@
 package ru.kpekepsalt.diary.service.Impl;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.kpekepsalt.diary.functional.VoidParamActionFunctional;
@@ -8,12 +13,6 @@ import ru.kpekepsalt.diary.model.Task;
 import ru.kpekepsalt.diary.model.TaskStatus;
 import ru.kpekepsalt.diary.service.PlanService;
 import ru.kpekepsalt.diary.service.TaskService;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
